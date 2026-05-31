@@ -70,13 +70,13 @@ Jeśli chcesz, możesz też w Riderze zrobić `Compound configuration`, która u
 Domyślne dane logowania do ERP:
 
 - login: `admin`
-- hasło: `NikonD5300@`
+- hasło: ``
 
 Lokalny SQL Server:
 
 - host: `localhost,11433`
 - login: `sa`
-- hasło: `ErpSqlLocal2026!`
+- hasło: ``
 
 ## ERP modules
 
