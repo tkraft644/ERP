@@ -1,0 +1,57 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ErpSystem.Desktop.App"
+             xmlns:local="using:ErpSystem.Desktop"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#EEF3F9" />
+                    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#F7FAFF" />
+                    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="SubtleSurfaceBrush" Color="#F5F8FC" />
+                    <SolidColorBrush x:Key="BorderBrush" Color="#D6E0EE" />
+                    <SolidColorBrush x:Key="ForegroundBrush" Color="#17324A" />
+                    <SolidColorBrush x:Key="MutedForegroundBrush" Color="#6B7E95" />
+                    <SolidColorBrush x:Key="AccentBrush" Color="#246BCE" />
+                    <SolidColorBrush x:Key="AccentSurfaceBrush" Color="#E8F1FF" />
+                    <SolidColorBrush x:Key="SelectedItemBackgroundBrush" Color="#E8F1FF" />
+                    <SolidColorBrush x:Key="SelectedItemBorderBrush" Color="#246BCE" />
+                    <SolidColorBrush x:Key="TabInactiveBackgroundBrush" Color="#EDF3FA" />
+                    <SolidColorBrush x:Key="TableHeaderBackgroundBrush" Color="#F1F5FA" />
+                    <SolidColorBrush x:Key="TableRowBackgroundBrush" Color="#FFFFFF" />
+                    <SolidColorBrush x:Key="TableAltRowBackgroundBrush" Color="#F8FBFE" />
+                </ResourceDictionary>
+
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="AppBackgroundBrush" Color="#0B1220" />
+                    <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#0F1A2B" />
+                    <SolidColorBrush x:Key="SurfaceBrush" Color="#142133" />
+                    <SolidColorBrush x:Key="SubtleSurfaceBrush" Color="#18283D" />
+                    <SolidColorBrush x:Key="BorderBrush" Color="#25364C" />
+                    <SolidColorBrush x:Key="ForegroundBrush" Color="#E8EEF7" />
+                    <SolidColorBrush x:Key="MutedForegroundBrush" Color="#9EB0C7" />
+                    <SolidColorBrush x:Key="AccentBrush" Color="#79AFFF" />
+                    <SolidColorBrush x:Key="AccentSurfaceBrush" Color="#18345A" />
+                    <SolidColorBrush x:Key="SelectedItemBackgroundBrush" Color="#19365D" />
+                    <SolidColorBrush x:Key="SelectedItemBorderBrush" Color="#79AFFF" />
+                    <SolidColorBrush x:Key="TabInactiveBackgroundBrush" Color="#18273A" />
+                    <SolidColorBrush x:Key="TableHeaderBackgroundBrush" Color="#18273A" />
+                    <SolidColorBrush x:Key="TableRowBackgroundBrush" Color="#142133" />
+                    <SolidColorBrush x:Key="TableAltRowBackgroundBrush" Color="#17263A" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+</Application>

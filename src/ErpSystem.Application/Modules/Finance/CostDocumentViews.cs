@@ -1,0 +1,57 @@
+namespace ErpSystem.Application.Modules.Finance;
+
+public sealed record CostPositionView(
+    int Id,
+    int LineNumber,
+    string CostCategory,
+    string Description,
+    decimal Quantity,
+    decimal UnitPrice,
+    decimal TaxRate,
+    decimal NetAmount,
+    decimal TaxAmount,
+    decimal GrossAmount,
+    int? TransportOrderId,
+    string? TransportOrderNumber,
+    int? VehicleId,
+    string? VehicleRegistrationNumber,
+    int? EmployeeId,
+    string? EmployeeFullName,
+    int? WarehouseId,
+    string? WarehouseName,
+    int? ContractorId,
+    string? ContractorName,
+    int? DepartmentId,
+    string? DepartmentName,
+    string? Notes);
+
+public sealed record CostDocumentListItemView(
+    int Id,
+    string Number,
+    string Status,
+    DateTime DocumentDate,
+    DateTime PostingDate,
+    DateTime? DueDate,
+    string? ContractorName,
+    string CurrencyCode,
+    decimal TotalNetAmount,
+    decimal TotalGrossAmount,
+    byte[] RowVersion);
+
+public sealed record CostDocumentDetailsView(
+    int Id,
+    string Number,
+    string Status,
+    DateTime DocumentDate,
+    DateTime PostingDate,
+    DateTime? DueDate,
+    int? ContractorId,
+    string? ContractorName,
+    string CurrencyCode,
+    decimal? ExchangeRate,
+    string? ExternalNumber,
+    string? Description,
+    IReadOnlyList<CostPositionView> Positions,
+    decimal TotalNetAmount,
+    decimal TotalGrossAmount,
+    byte[] RowVersion);

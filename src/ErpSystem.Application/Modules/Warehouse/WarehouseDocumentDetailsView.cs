@@ -1,0 +1,25 @@
+namespace ErpSystem.Application.Modules.Warehouse;
+
+public sealed record WarehouseDocumentDetailsView(
+    int Id,
+    string Number,
+    string Type,
+    string Status,
+    DateTime DocumentDate,
+    int? ContractorId,
+    string? ContractorName,
+    int? SourceWarehouseId,
+    string? SourceWarehouseCode,
+    int? SourceLocationId,
+    string? SourceLocationCode,
+    int? TargetWarehouseId,
+    string? TargetWarehouseCode,
+    int? TargetLocationId,
+    string? TargetLocationCode,
+    string? ExternalReference,
+    string? Notes,
+    DateTime? PostedAtUtc,
+    int? PostedByUserId,
+    IReadOnlyList<WarehouseDocumentPositionView> Positions,
+    IReadOnlyList<StockMovementView> Movements,
+    byte[] RowVersion);

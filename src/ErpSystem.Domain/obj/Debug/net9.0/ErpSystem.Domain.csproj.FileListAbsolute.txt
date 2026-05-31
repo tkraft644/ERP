@@ -1,0 +1,11 @@
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/bin/Debug/net9.0/ErpSystem.Domain.deps.json
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/bin/Debug/net9.0/ErpSystem.Domain.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/bin/Debug/net9.0/ErpSystem.Domain.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.AssemblyInfoInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.AssemblyInfo.cs
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.csproj.CoreCompileInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/refint/ErpSystem.Domain.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ErpSystem.Domain.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Domain/obj/Debug/net9.0/ref/ErpSystem.Domain.dll

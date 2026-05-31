@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels"
+             x:Class="ErpSystem.Desktop.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+    <Grid Background="{DynamicResource AppBackgroundBrush}">
+        <Border MaxWidth="480"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Padding="28"
+                CornerRadius="24"
+                Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1">
+            <StackPanel Spacing="18">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="ERP System"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Logowanie"
+                               FontSize="32"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                    <TextBlock Text="Zaloguj się do lokalnego API i bazy SQL Server."
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                </StackPanel>
+
+                <Border Padding="14"
+                        CornerRadius="16"
+                        Background="{DynamicResource SubtleSurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding ApiStatusLabel}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <TextBlock Text="{Binding ApiStatusDescription}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                        <TextBlock Text="{Binding ApiEndpointLabel}"
+                                   Foreground="{DynamicResource AccentBrush}" />
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Login"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                    <TextBox Text="{Binding Login}"
+                             Watermark="admin"
+                             Padding="12,10" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Hasło"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                    <TextBox Text="{Binding Password}"
+                             PasswordChar="•"
+                             Watermark="Wpisz hasło"
+                             Padding="12,10" />
+                </StackPanel>
+
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="#D64545"
+                           TextWrapping="Wrap" />
+
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+                    <Button Command="{Binding LoginCommand}"
+                            Padding="14,12"
+                            Background="{DynamicResource AccentBrush}"
+                            Foreground="White">
+                        <TextBlock Text="Zaloguj" />
+                    </Button>
+                    <Button Grid.Column="1"
+                            Command="{Binding RefreshConnectionStatusCommand}"
+                            Padding="14,12">
+                        <TextBlock Text="Sprawdź API" />
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

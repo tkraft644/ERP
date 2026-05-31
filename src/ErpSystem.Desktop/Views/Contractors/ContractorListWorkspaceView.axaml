@@ -1,0 +1,204 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels"
+             xmlns:contractors="using:ErpSystem.Desktop.ViewModels.Contractors"
+             xmlns:services="using:ErpSystem.Desktop.Services"
+             x:Class="ErpSystem.Desktop.Views.Contractors.ContractorListWorkspaceView"
+             x:Name="Root"
+             x:DataType="contractors:ContractorListWorkspaceViewModel">
+    <UserControl.Styles>
+        <StyleInclude Source="avares://ErpSystem.Desktop/Views/Contractors/ContractorsWorkspaceStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
+            <StackPanel Spacing="4">
+                <TextBlock Text="Kontrahenci" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="{Binding Title}" FontSize="28" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Subtitle}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForegroundBrush}" />
+            </StackPanel>
+            <Border Grid.Column="1" Padding="12,9" CornerRadius="14" Background="{DynamicResource AccentSurfaceBrush}" VerticalAlignment="Top">
+                <TextBlock Text="Jedna kartoteka partnera dla sprzedaży, zakupów, transportu i magazynu." MaxWidth="320" TextWrapping="Wrap" />
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Spacing="16">
+            <Border Classes="panel" Padding="14" CornerRadius="18">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <WrapPanel Orientation="Horizontal">
+                        <TextBox Width="320" Margin="0,0,10,10" Text="{Binding SearchText}" Watermark="Szukaj po kodzie, nazwie, mailu..." Padding="12,10" />
+                        <ComboBox Width="220" Margin="0,0,10,10" ItemsSource="{Binding TypeFilterOptions}" SelectedItem="{Binding SelectedTypeFilter}" />
+                        <CheckBox Margin="0,0,14,10" VerticalAlignment="Center" IsChecked="{Binding ShowInactive}" Content="Pokaż nieaktywne" />
+                        <CheckBox Margin="0,0,14,10" VerticalAlignment="Center" IsChecked="{Binding ShowArchived}" Content="Pokaż archiwum" />
+                        <Button Margin="0,0,10,10" Padding="12,10" Command="{Binding RunActionCommand}" CommandParameter="New"><TextBlock Text="Nowy" /></Button>
+                        <Button Margin="0,0,10,10" Padding="12,10" Command="{Binding RunActionCommand}" CommandParameter="Save"><TextBlock Text="Zapisz" /></Button>
+                        <Button Margin="0,0,10,10" Padding="12,10" Command="{Binding RunActionCommand}" CommandParameter="Archive"><TextBlock Text="Archiwizuj / przywróć" /></Button>
+                        <Button Margin="0,0,10,10" Padding="12,10" Command="{Binding RunActionCommand}" CommandParameter="Delete"><TextBlock Text="Usuń" /></Button>
+                        <Button Margin="0,0,10,10" Padding="12,10" Command="{Binding RunActionCommand}" CommandParameter="Export"><TextBlock Text="Eksportuj" /></Button>
+                    </WrapPanel>
+                </ScrollViewer>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding SummaryCards}">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal" ItemWidth="245" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SummaryCardViewModel">
+                        <Border Margin="0,0,14,14" Padding="16" MinHeight="118" CornerRadius="18" Classes="panel">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Label}" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding Value}" FontSize="28" FontWeight="SemiBold" Foreground="{Binding AccentColor}" />
+                                <TextBlock Text="{Binding Caption}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnDefinitions="1.35*,1.05*" ColumnSpacing="18">
+            <Border Classes="panel" Padding="18" CornerRadius="22">
+                <Grid RowDefinitions="Auto,*" RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Lista kontrahentów" FontSize="18" FontWeight="SemiBold" />
+                            <TextBlock Text="Klienci, dostawcy, przewoźnicy i podmioty pomocnicze w jednym rejestrze." TextWrapping="Wrap" Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding VisibleContractors.Count, StringFormat='Kontrahentów: {0}'}" Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <Grid MinWidth="980" RowDefinitions="Auto,*">
+                            <Border Padding="12,10" CornerRadius="14" Background="{DynamicResource TableHeaderBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                                <Grid ColumnDefinitions="120,220,190,140,190,110,110">
+                                    <TextBlock Text="Kod" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="1" Text="Nazwa" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="2" Text="Typy" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="3" Text="Miasto" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="4" Text="Kontakt" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="5" Text="Status" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="6" Text="Aktualizacja" FontWeight="SemiBold" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                </Grid>
+                            </Border>
+                            <ListBox Grid.Row="1" Margin="0,12,0,0" ItemsSource="{Binding VisibleContractors}" SelectedItem="{Binding SelectedContractor}" Background="Transparent" BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="contractors:ContractorRowViewModel">
+                                        <Button Padding="0" Background="Transparent" BorderThickness="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Command="{Binding DataContext.SelectContractorCommand, ElementName=Root}" CommandParameter="{Binding}">
+                                            <Border Margin="0,0,0,8" Padding="12" CornerRadius="14" Classes="table-row" BorderThickness="1" HorizontalAlignment="Stretch">
+                                                <Grid ColumnDefinitions="120,220,190,140,190,110,110">
+                                                    <TextBlock Text="{Binding Code}" FontWeight="SemiBold" />
+                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Grid.Column="2" Text="{Binding TypesLabel}" TextWrapping="Wrap" />
+                                                    <TextBlock Grid.Column="3" Text="{Binding City}" />
+                                                    <TextBlock Grid.Column="4" Text="{Binding Email}" TextTrimming="CharacterEllipsis" />
+                                                    <Border Grid.Column="5" Padding="10,4" CornerRadius="999" Background="{Binding StatusColor}" HorizontalAlignment="Left">
+                                                        <TextBlock Text="{Binding StatusLabel}" FontSize="11" FontWeight="SemiBold" Foreground="White" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="6" Text="{Binding UpdatedAtLabel}" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Classes="panel" Padding="18" CornerRadius="22">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="{Binding SelectedRecord.Name, FallbackValue='Nowy kontrahent'}" FontSize="18" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding LastActionMessage}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+
+                        <UniformGrid Columns="2" Rows="3">
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Typy" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedTypesLabel}" TextWrapping="Wrap" /></StackPanel>
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Status" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedStatusLabel}" /></StackPanel>
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Aktualizacja" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedUpdatedAt}" /></StackPanel>
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Terminy płatności" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedPaymentTerms}" /></StackPanel>
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Limit" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedCreditLimit}" /></StackPanel>
+                            <StackPanel Margin="0,0,12,10" Spacing="4"><TextBlock Text="Konto bankowe" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBlock Text="{Binding SelectedBankAccount}" TextWrapping="Wrap" /></StackPanel>
+                        </UniformGrid>
+
+                        <Border Classes="soft-card" Padding="14" CornerRadius="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Edycja kartoteki" FontSize="16" FontWeight="SemiBold" />
+                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+                                    <StackPanel Spacing="4"><TextBlock Text="Kod" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorCode}" /></StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="4"><TextBlock Text="Nazwa" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorName}" /></StackPanel>
+                                    <StackPanel Grid.Row="1" Spacing="4"><TextBlock Text="Skrót" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorShortName}" /></StackPanel>
+                                    <StackPanel Grid.Row="1" Grid.Column="1" Spacing="4"><TextBlock Text="NIP" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorTaxId}" /></StackPanel>
+                                    <StackPanel Grid.Row="2" Spacing="4"><TextBlock Text="Miasto" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorCity}" /></StackPanel>
+                                    <StackPanel Grid.Row="2" Grid.Column="1" Spacing="4"><TextBlock Text="Typy (po przecinku)" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorTypes}" /></StackPanel>
+                                    <StackPanel Grid.Row="3" Spacing="4"><TextBlock Text="Email" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorEmail}" /></StackPanel>
+                                    <StackPanel Grid.Row="3" Grid.Column="1" Spacing="4"><TextBlock Text="Telefon" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorPhone}" /></StackPanel>
+                                    <StackPanel Grid.Row="4" Spacing="4"><TextBlock Text="Warunki płatności" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorPaymentTerms}" /></StackPanel>
+                                    <StackPanel Grid.Row="4" Grid.Column="1" Spacing="4"><TextBlock Text="Limit kupiecki" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorCreditLimit}" /></StackPanel>
+                                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Spacing="4"><TextBlock Text="Konto bankowe" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorBankAccount}" /></StackPanel>
+                                </Grid>
+                                <StackPanel Spacing="4"><TextBlock Text="Adres główny" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorPrimaryAddress}" /></StackPanel>
+                                <StackPanel Spacing="4"><TextBlock Text="Notatka" Foreground="{DynamicResource MutedForegroundBrush}" /><TextBox Text="{Binding EditorNotes}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="72" /></StackPanel>
+                                <CheckBox IsChecked="{Binding EditorIsActive}" Content="Kartoteka aktywna" />
+                            </StackPanel>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Border Classes="soft-card" Padding="14" CornerRadius="16">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="Adresy" FontSize="15" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding SelectedAddresses}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="services:ContractorAddressRecord">
+                                                <StackPanel Margin="0,0,0,8" Spacing="2">
+                                                    <TextBlock Text="{Binding Kind}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Label}" TextWrapping="Wrap" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Classes="soft-card" Padding="14" CornerRadius="16">
+                                <StackPanel Spacing="8">
+                                    <TextBlock Text="Kontakty" FontSize="15" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding SelectedContacts}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="services:ContractorContactRecord">
+                                                <StackPanel Margin="0,0,0,8" Spacing="2">
+                                                    <TextBlock Text="{Binding FullName}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Email}" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                    <TextBlock Text="{Binding Phone}" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Classes="soft-card" Padding="14" CornerRadius="16">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Historia zmian" FontSize="15" FontWeight="SemiBold" />
+                                <ItemsControl ItemsSource="{Binding SelectedHistory}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="services:ContractorHistoryRecord">
+                                            <Grid Margin="0,0,0,8" ColumnDefinitions="*,Auto">
+                                                <StackPanel Spacing="2">
+                                                    <TextBlock Text="{Binding Action}" FontWeight="SemiBold" />
+                                                    <TextBlock Text="{Binding Actor}" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding AtUtc, StringFormat='{}{0:dd.MM HH:mm}'}" Foreground="{DynamicResource MutedForegroundBrush}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

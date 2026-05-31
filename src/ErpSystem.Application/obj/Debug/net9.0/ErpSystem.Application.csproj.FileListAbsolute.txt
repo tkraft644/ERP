@@ -1,0 +1,17 @@
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Application.deps.json
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Application.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Application.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Domain.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Shared.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Domain.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/bin/Debug/net9.0/ErpSystem.Shared.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.csproj.AssemblyReference.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.AssemblyInfoInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.AssemblyInfo.cs
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.csproj.CoreCompileInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSyste.B28C5823.Up2Date
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/refint/ErpSystem.Application.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ErpSystem.Application.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Application/obj/Debug/net9.0/ref/ErpSystem.Application.dll

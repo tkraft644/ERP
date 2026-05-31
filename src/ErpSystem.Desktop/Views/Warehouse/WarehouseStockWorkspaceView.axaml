@@ -1,0 +1,678 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels.Warehouse"
+             x:Class="ErpSystem.Desktop.Views.Warehouse.WarehouseStockWorkspaceView"
+             x:Name="Root"
+             x:DataType="vm:WarehouseStockWorkspaceViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem Border.stock-row">
+            <Setter Property="Background" Value="{DynamicResource TableRowBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected Border.stock-row">
+            <Setter Property="Background" Value="{DynamicResource SelectedItemBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SelectedItemBorderBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="18">
+            <StackPanel Spacing="5">
+                <TextBlock Text="Magazyn"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="{Binding Title}"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Text="{Binding Subtitle}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Padding="12,9"
+                    CornerRadius="14"
+                    Background="{DynamicResource AccentSurfaceBrush}"
+                    VerticalAlignment="Top">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Zmiana magazynowa"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Operator ma otwarte alerty i dokumenty do reakcji."
+                               MaxWidth="240"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    Spacing="16">
+            <Border Classes="panel"
+                    Padding="14"
+                    CornerRadius="18">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <WrapPanel Orientation="Horizontal"
+                               >
+                        <TextBox Width="360"
+                                 Margin="0,0,10,10"
+                                 Text="{Binding SearchText}"
+                                 Watermark="Szukaj po nazwie lub kodzie..."
+                                 Padding="12,10"
+                                 Background="{DynamicResource SubtleSurfaceBrush}"
+                                 BorderBrush="{DynamicResource BorderBrush}" />
+                        <ComboBox Width="170"
+                                  Margin="0,0,10,10"
+                                  ItemsSource="{Binding WarehouseFilterOptions}"
+                                  SelectedItem="{Binding SelectedWarehouseFilter}" />
+                        <ComboBox Width="180"
+                                  Margin="0,0,10,10"
+                                  ItemsSource="{Binding CategoryFilterOptions}"
+                                  SelectedItem="{Binding SelectedCategoryFilter}" />
+                        <ComboBox Width="180"
+                                  Margin="0,0,10,10"
+                                  ItemsSource="{Binding StatusFilterOptions}"
+                                  SelectedItem="{Binding SelectedStatusFilter}" />
+                        <CheckBox Margin="0,0,18,10"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding OnlyBelowMinimum}"
+                                  Content="Tylko ponizej minimum" />
+                        <CheckBox Margin="0,0,18,10"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding OnlyWithReservation}"
+                                  Content="Tylko z rezerwacja" />
+                    </WrapPanel>
+                </ScrollViewer>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding SummaryCards}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="255" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:WarehouseSummaryCardViewModel">
+                        <Border Margin="0,0,14,14"
+                                Padding="16"
+                                MinHeight="126"
+                                CornerRadius="18"
+                                Classes="panel">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Label}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding Value}"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding AccentColor}" />
+                                <TextBlock Text="{Binding Caption}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Border Classes="panel"
+                    Padding="16"
+                    CornerRadius="18">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Wymaga reakcji"
+                               FontSize="17"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+
+                    <ItemsControl ItemsSource="{Binding AttentionItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"
+                                           ItemWidth="270" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:WarehouseAttentionItemViewModel">
+                                <Button Margin="0,0,12,12"
+                                        Padding="0"
+                                        Command="{Binding DataContext.ApplyAttentionActionCommand, ElementName=Root}"
+                                        CommandParameter="{Binding}"
+                                        Background="Transparent"
+                                        BorderThickness="0">
+                                    <Border Padding="14"
+                                            CornerRadius="16"
+                                            Background="{DynamicResource SubtleSurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1">
+                                        <StackPanel Spacing="8">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <Border Grid.Column="1"
+                                                        Padding="8,4"
+                                                        CornerRadius="999"
+                                                        Background="{Binding BadgeColor}">
+                                                    <TextBlock Text="{Binding BadgeText}"
+                                                               FontSize="11"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White" />
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Detail}"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="1.7*,0.95*"
+              ColumnSpacing="18">
+            <Border Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <Grid RowDefinitions="Auto,Auto,*"
+                      RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Tabela stanow magazynowych"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Text="Lista pokazuje produkty, ktore wymagaja reakcji i ich dostepnosc operacyjna."
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding VisibleStockItems.Count, StringFormat='Pozycji: {0}'}"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1"
+                                  Grid.RowSpan="2"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <Grid MinWidth="1160"
+                              RowDefinitions="Auto,*">
+                            <Border Padding="12,10"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource TableHeaderBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="110,1.4*,110,100,70,80,80,90,110,110,140">
+                                    <TextBlock Text="Kod"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="Nazwa"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="Magazyn"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="3"
+                                               Text="Lokacja"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="4"
+                                               Text="Ilość"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="5"
+                                               Text="Jednostka"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="6"
+                                               Text="Minimum"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="7"
+                                               Text="Dostępne"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="8"
+                                               Text="Zarezerw."
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="9"
+                                               Text="Status"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="10"
+                                               Text="Ostatni ruch"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                </Grid>
+                            </Border>
+
+                            <ListBox Grid.Row="1"
+                                     Margin="0,12,0,0"
+                                     ItemsSource="{Binding VisibleStockItems}"
+                                     SelectedItem="{Binding SelectedStockItem}"
+                                     Background="Transparent"
+                                     BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WarehouseStockRowViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="12,12"
+                                                HorizontalAlignment="Stretch"
+                                                CornerRadius="14"
+                                                Classes="stock-row"
+                                                BorderThickness="1">
+                                            <Grid ColumnDefinitions="110,1.4*,110,100,70,80,80,90,110,110,140">
+                                                <TextBlock Text="{Binding Code}"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <StackPanel Grid.Column="1"
+                                                            Spacing="2">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Text="{Binding Category}"
+                                                               FontSize="11"
+                                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding Warehouse}"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="3"
+                                                           Text="{Binding Location}"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="4"
+                                                           Text="{Binding OnHand}"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="5"
+                                                           Text="{Binding Unit}"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="6"
+                                                           Text="{Binding MinimumLevel}"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="7"
+                                                           Text="{Binding Available}"
+                                                           HorizontalAlignment="Center"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="8"
+                                                           Text="{Binding Reserved}"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <Border Grid.Column="9"
+                                                        HorizontalAlignment="Left"
+                                                        Padding="9,4"
+                                                        CornerRadius="999"
+                                                        Background="{Binding StatusColor}">
+                                                    <TextBlock Text="{Binding Status}"
+                                                               FontSize="11"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White" />
+                                                </Border>
+                                                <TextBlock Grid.Column="10"
+                                                           Text="{Binding LastMovement}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Column="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="14">
+                <Border Classes="panel"
+                        Padding="18"
+                        CornerRadius="22">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Szczegoly zaznaczonej pozycji"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <TextBlock Text="{Binding SelectedProductName}"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="8">
+                            <TextBlock Text="Produkt"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding SelectedProductName}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="Kod"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedProductCode}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="2"
+                                       Text="Stan"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="2"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedProductQuantity}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="3"
+                                       Text="Minimum"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedProductMinimum}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="4"
+                                       Text="Zarezerwowane"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="4"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedProductReserved}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="5"
+                                       Text="Dostępne"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="5"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedProductAvailable}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="10">
+                            <Border Padding="12"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource SubtleSurfaceBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Status"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <Border HorizontalAlignment="Left"
+                                            Padding="8,4"
+                                            CornerRadius="999"
+                                            Background="{Binding SelectedProductStatusColor}">
+                                        <TextBlock Text="{Binding SelectedProductStatus}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    Padding="12"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource SubtleSurfaceBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Ostatni ruch"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Text="{Binding SelectedLastMovement}"
+                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                        <Border Padding="12"
+                                CornerRadius="14"
+                                Background="{DynamicResource SubtleSurfaceBrush}">
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Lokalizacja / dostawca"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding SelectedProductLocation}"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                <TextBlock Text="{Binding SelectedSupplier}"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Padding="12"
+                                CornerRadius="14"
+                                Background="{DynamicResource AccentSurfaceBrush}">
+                            <TextBlock Text="{Binding SelectedRestockHint}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Border>
+                        <WrapPanel ItemWidth="150">
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunProductActionCommand}"
+                                    CommandParameter="PZ"
+                                    Background="{DynamicResource AccentSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Utwórz PZ"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunProductActionCommand}"
+                                    CommandParameter="WZ"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Utwórz WZ"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunProductActionCommand}"
+                                    CommandParameter="Historia"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Historia"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunProductActionCommand}"
+                                    CommandParameter="Edytuj"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Edytuj produkt"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                        </WrapPanel>
+                        <TextBlock Text="{Binding LastActionMessage}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Row="1"
+                        Padding="18"
+                        CornerRadius="22"
+                        Classes="panel">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Ryzyka wybranej pozycji"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <ItemsControl ItemsSource="{Binding SelectedIssues}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:WarehouseStockIssueViewModel">
+                                    <Border Margin="0,0,0,8"
+                                            Padding="12"
+                                            CornerRadius="14"
+                                            Background="{DynamicResource SubtleSurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              RowDefinitions="Auto,Auto">
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ForegroundBrush}" />
+                                            <Border Grid.Column="1"
+                                                    Padding="8,4"
+                                                    CornerRadius="999"
+                                                    Background="{Binding StateColor}">
+                                                <TextBlock Text="{Binding State}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="White" />
+                                            </Border>
+                                            <TextBlock Grid.Row="1"
+                                                       Grid.ColumnSpan="2"
+                                                       Margin="0,6,0,0"
+                                                       Text="{Binding Detail}"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="*,*"
+                      ColumnSpacing="14">
+                    <Border Padding="18"
+                            CornerRadius="22"
+                            Classes="panel">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Dokumenty powiazane"
+                                       FontSize="17"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <ItemsControl ItemsSource="{Binding SelectedPendingDocuments}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WarehousePendingDocumentViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="12"
+                                                CornerRadius="14"
+                                                Background="{DynamicResource SubtleSurfaceBrush}">
+                                            <StackPanel Spacing="4">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Text="{Binding Number}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <Border Grid.Column="1"
+                                                            Padding="8,4"
+                                                            CornerRadius="999"
+                                                            Background="{Binding StateColor}">
+                                                        <TextBlock Text="{Binding State}"
+                                                                   FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White" />
+                                                    </Border>
+                                                </Grid>
+                                                <TextBlock Text="{Binding Type}"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                <TextBlock Text="{Binding Counterparty}"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Text="{Binding Age}"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1"
+                            Padding="18"
+                            CornerRadius="22"
+                            Classes="panel">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="Ruchy wybranej pozycji"
+                                       FontSize="17"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <ItemsControl ItemsSource="{Binding SelectedMovements}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WarehouseMovementLineViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="12"
+                                                CornerRadius="14"
+                                                Background="{DynamicResource SubtleSurfaceBrush}">
+                                            <StackPanel Spacing="3">
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <TextBlock Text="{Binding Time}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Margin="10,0,0,0"
+                                                               Text="{Binding Document}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Quantity}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource AccentBrush}" />
+                                                </Grid>
+                                                <TextBlock Text="{Binding Direction}"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                <TextBlock Text="{Binding Operator}"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

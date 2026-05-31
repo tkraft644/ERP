@@ -1,0 +1,380 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels.System"
+             x:Class="ErpSystem.Desktop.Views.System.SystemDocumentSequencesWorkspaceView"
+             x:Name="Root"
+             x:DataType="vm:SystemDocumentSequencesWorkspaceViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://ErpSystem.Desktop/Views/System/SystemWorkspaceStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="18">
+            <StackPanel Spacing="5">
+                <TextBlock Text="System"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="{Binding Title}"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Text="{Binding Subtitle}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Padding="12,9"
+                    CornerRadius="14"
+                    Background="{DynamicResource AccentSurfaceBrush}"
+                    VerticalAlignment="Top">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Numeracja dokumentów"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Zarządzaj kluczami, prefiksami, resetem i generacją numerów dla wszystkich modułów."
+                               MaxWidth="320"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    Spacing="16">
+            <Border Classes="panel"
+                    Padding="14"
+                    CornerRadius="18">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <WrapPanel Orientation="Horizontal"
+                               >
+                        <TextBox Width="340"
+                                 Margin="0,0,10,10"
+                                 Text="{Binding SearchText}"
+                                 Watermark="Szukaj po kluczu, module lub prefiksie..."
+                                 Padding="12,10"
+                                 Background="{DynamicResource SubtleSurfaceBrush}"
+                                 BorderBrush="{DynamicResource BorderBrush}" />
+                        <ComboBox Width="210"
+                                  Margin="0,0,10,10"
+                                  ItemsSource="{Binding ModuleFilterOptions}"
+                                  SelectedItem="{Binding SelectedModuleFilter}" />
+                        <CheckBox Margin="0,0,18,10"
+                                  VerticalAlignment="Center"
+                                  IsChecked="{Binding ShowInactive}"
+                                  Content="Pokaż nieaktywne" />
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunSequenceActionCommand}"
+                                CommandParameter="New"
+                                Background="{DynamicResource AccentSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Nowa sekwencja"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunSequenceActionCommand}"
+                                CommandParameter="Save"
+                                Background="{DynamicResource AccentSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Zapisz"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunSequenceActionCommand}"
+                                CommandParameter="Generate"
+                                IsEnabled="{Binding HasSelectedSequence}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Generuj numer"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunSequenceActionCommand}"
+                                CommandParameter="Delete"
+                                IsEnabled="{Binding HasSelectedSequence}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Usuń"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+                    </WrapPanel>
+                </ScrollViewer>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding SummaryCards}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="255" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,14,14"
+                                Padding="16"
+                                MinHeight="126"
+                                CornerRadius="18"
+                                Classes="panel">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Label}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding Value}"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding AccentColor}" />
+                                <TextBlock Text="{Binding Caption}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="1.35*,1.15*"
+              ColumnSpacing="18">
+            <Border Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <Grid RowDefinitions="Auto,*"
+                      RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Sekwencje numeracyjne"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Text="Klucze i numeratory współdzielone przez dokumenty magazynowe, transportowe, HR i finanse."
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding VisibleSequences.Count, StringFormat='Sekwencji: {0}'}"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                        <Grid MinWidth="980"
+                              RowDefinitions="Auto,*">
+                            <Border Padding="12,10"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource TableHeaderBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="150,140,120,90,90,130,110,150">
+                                    <TextBlock Text="Klucz"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="Moduł"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="Prefiks"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="3"
+                                               Text="Aktualny"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="4"
+                                               Text="Długość"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="5"
+                                               Text="Reset"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="6"
+                                               Text="Status"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="7"
+                                               Text="Ostatnia generacja"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                </Grid>
+                            </Border>
+
+                            <ListBox Grid.Row="1"
+                                     Margin="0,12,0,0"
+                                     ItemsSource="{Binding VisibleSequences}"
+                                     SelectedItem="{Binding SelectedSequence}"
+                                     Background="Transparent"
+                                     BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Padding="0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Command="{Binding DataContext.SelectSequenceCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}">
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="12,12"
+                                                    HorizontalAlignment="Stretch"
+                                                    CornerRadius="14"
+                                                    Classes="table-row"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="150,140,120,90,90,130,110,150">
+                                                    <TextBlock Text="{Binding Key}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Module}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Prefix}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="3"
+                                                               Text="{Binding CurrentNumber}"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="4"
+                                                               Text="{Binding NumberLength}"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="5"
+                                                               Text="{Binding ResetPolicy}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="6"
+                                                               Text="{Binding StatusLabel}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="7"
+                                                               Text="{Binding LastGeneratedAt, StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Edycja sekwencji"
+                                   FontSize="18"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+
+                        <Grid ColumnDefinitions="150,*"
+                              ColumnSpacing="12"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                            <TextBlock Text="Klucz"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding EditorKey}"
+                                     Watermark="np. WH_PZ"
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="Moduł"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="1"
+                                     Text="{Binding EditorModule}"
+                                     Watermark="np. Warehouse"
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <TextBlock Grid.Row="2"
+                                       Text="Prefiks"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBox Grid.Row="2"
+                                     Grid.Column="1"
+                                     Text="{Binding EditorPrefix}"
+                                     Watermark="np. PZ"
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <TextBlock Grid.Row="3"
+                                       Text="Długość"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <ComboBox Grid.Row="3"
+                                      Grid.Column="1"
+                                      ItemsSource="{Binding NumberLengthOptions}"
+                                      SelectedItem="{Binding EditorNumberLength}" />
+                            <TextBlock Grid.Row="4"
+                                       Text="Aktualny numer"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBox Grid.Row="4"
+                                     Grid.Column="1"
+                                     Text="{Binding EditorCurrentNumber}"
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <TextBlock Grid.Row="5"
+                                       Text="Reset"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <ComboBox Grid.Row="5"
+                                      Grid.Column="1"
+                                      ItemsSource="{Binding ResetPolicyOptions}"
+                                      SelectedItem="{Binding EditorResetPolicy}" />
+                            <CheckBox Grid.Row="6"
+                                      Grid.Column="1"
+                                      IsChecked="{Binding EditorIsActive}"
+                                      Content="Sekwencja aktywna" />
+                        </Grid>
+
+                        <Border Classes="soft-card"
+                                Padding="14"
+                                CornerRadius="16">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Ostatnio wygenerowany numer"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding LastGeneratedPreview}"
+                                           FontSize="20"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Classes="soft-card"
+                                Padding="14"
+                                CornerRadius="16">
+                            <TextBlock Text="{Binding LastActionMessage}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

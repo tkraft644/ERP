@@ -1,0 +1,472 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels.System"
+             x:Class="ErpSystem.Desktop.Views.System.SystemUsersWorkspaceView"
+             x:Name="Root"
+             x:DataType="vm:SystemUsersWorkspaceViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://ErpSystem.Desktop/Views/System/SystemWorkspaceStyles.axaml" />
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="18">
+            <StackPanel Spacing="5">
+                <TextBlock Text="System"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="{Binding Title}"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Text="{Binding Subtitle}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Padding="12,9"
+                    CornerRadius="14"
+                    Background="{DynamicResource AccentSurfaceBrush}"
+                    VerticalAlignment="Top">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Dostęp i konta"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Zakładaj użytkowników, przypisuj role i obsługuj resety haseł z jednego miejsca."
+                               MaxWidth="300"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    Spacing="16">
+            <Border Classes="panel"
+                    Padding="14"
+                    CornerRadius="18">
+                <StackPanel Spacing="12">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <WrapPanel Orientation="Horizontal"
+                                   >
+                            <TextBox Width="330"
+                                     Margin="0,0,10,10"
+                                     Text="{Binding SearchText}"
+                                     Watermark="Szukaj po loginie, nazwie lub emailu..."
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <ComboBox Width="220"
+                                      Margin="0,0,10,10"
+                                      ItemsSource="{Binding RoleFilterOptions}"
+                                      SelectedItem="{Binding SelectedRoleFilter}" />
+                            <CheckBox Margin="0,0,18,10"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ShowInactive}"
+                                      Content="Pokaż nieaktywne" />
+                            <Button Margin="0,0,10,10"
+                                    Padding="12,10"
+                                    Command="{Binding RunUserActionCommand}"
+                                    CommandParameter="New"
+                                    Background="{DynamicResource AccentSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Nowy użytkownik"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="12,10"
+                                    Command="{Binding RunUserActionCommand}"
+                                    CommandParameter="Save"
+                                    Background="{DynamicResource AccentSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Zapisz"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="12,10"
+                                    Command="{Binding RunUserActionCommand}"
+                                    CommandParameter="Toggle"
+                                    IsEnabled="{Binding HasSelectedUser}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Aktywuj / wyłącz"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="12,10"
+                                    Command="{Binding RunUserActionCommand}"
+                                    CommandParameter="Reset"
+                                    IsEnabled="{Binding HasSelectedUser}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Reset hasła"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="12,10"
+                                    Command="{Binding RunUserActionCommand}"
+                                    CommandParameter="Delete"
+                                    IsEnabled="{Binding HasSelectedUser}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Usuń"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                        </WrapPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding SummaryCards}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="255" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,14,14"
+                                Padding="16"
+                                MinHeight="126"
+                                CornerRadius="18"
+                                Classes="panel">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Label}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding Value}"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding AccentColor}" />
+                                <TextBlock Text="{Binding Caption}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="1.45*,1.05*"
+              ColumnSpacing="18">
+            <Border Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <Grid RowDefinitions="Auto,*"
+                      RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Lista użytkowników"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Text="Konta, przypisania ról oraz operacyjne informacje o logowaniu i resetach."
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding VisibleUsers.Count, StringFormat='Użytkowników: {0}'}"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                        <Grid MinWidth="1140"
+                              RowDefinitions="Auto,*">
+                            <Border Padding="12,10"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource TableHeaderBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="120,180,240,220,110,130,140">
+                                    <TextBlock Text="Login"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="Użytkownik"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="Email"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="3"
+                                               Text="Role"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="4"
+                                               Text="Status"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="5"
+                                               Text="Ostatnie logowanie"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="6"
+                                               Text="Reset hasła"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                </Grid>
+                            </Border>
+
+                            <ListBox Grid.Row="1"
+                                     Margin="0,12,0,0"
+                                     ItemsSource="{Binding VisibleUsers}"
+                                     SelectedItem="{Binding SelectedUser}"
+                                     Background="Transparent"
+                                     BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Padding="0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Command="{Binding DataContext.SelectUserCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}">
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="12,12"
+                                                    HorizontalAlignment="Stretch"
+                                                    CornerRadius="14"
+                                                    Classes="table-row"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="120,180,240,220,110,130,140">
+                                                    <TextBlock Text="{Binding UserName}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding DisplayName}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Email}"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="3"
+                                                               Text="{Binding RolesLabel}"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <Border Grid.Column="4"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center"
+                                                            Padding="9,4"
+                                                            CornerRadius="999"
+                                                            Background="{Binding StatusColor}">
+                                                        <TextBlock Text="{Binding Status}"
+                                                                   FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="5"
+                                                               Text="{Binding LastSignInLabel}"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="6"
+                                                               Text="{Binding LastPasswordResetLabel}"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{Binding SelectedUserTitle}"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Text="{Binding SelectedUserRolesLabel}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="12"
+                              RowDefinitions="Auto,Auto,Auto">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Login"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBox Text="{Binding EditorUserName}"
+                                         Watermark="np. j.kowalski"
+                                         Padding="12,10"
+                                         Background="{DynamicResource SubtleSurfaceBrush}"
+                                         BorderBrush="{DynamicResource BorderBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1"
+                                        Spacing="6">
+                                <TextBlock Text="Nazwa użytkownika"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBox Text="{Binding EditorDisplayName}"
+                                         Watermark="Imię i nazwisko"
+                                         Padding="12,10"
+                                         Background="{DynamicResource SubtleSurfaceBrush}"
+                                         BorderBrush="{DynamicResource BorderBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Spacing="6">
+                                <TextBlock Text="Email"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBox Text="{Binding EditorEmail}"
+                                         Watermark="adres@firma.pl"
+                                         Padding="12,10"
+                                         Background="{DynamicResource SubtleSurfaceBrush}"
+                                         BorderBrush="{DynamicResource BorderBrush}" />
+                            </StackPanel>
+                            <CheckBox Grid.Row="2"
+                                      Grid.ColumnSpan="2"
+                                      IsChecked="{Binding EditorIsActive}"
+                                      Content="Konto aktywne" />
+                        </Grid>
+
+                        <Border Classes="soft-card"
+                                Padding="14"
+                                CornerRadius="16">
+                            <StackPanel Spacing="10">
+                                <Grid ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="10">
+                                    <StackPanel Spacing="6">
+                                        <TextBlock Text="Przypisane role"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                        <ComboBox ItemsSource="{Binding RolesToAssign}"
+                                                  SelectedItem="{Binding SelectedRoleToAssign}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Name}" />
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+                                    <Button Grid.Column="1"
+                                            VerticalAlignment="Bottom"
+                                            Padding="12,10"
+                                            Command="{Binding RunUserActionCommand}"
+                                            CommandParameter="AddRole"
+                                            IsEnabled="{Binding HasSelectedUser}"
+                                            Background="{DynamicResource AccentSurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                        <TextBlock Text="Dodaj rolę"
+                                                   Foreground="{DynamicResource AccentBrush}" />
+                                    </Button>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding AssignedRoles}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="10"
+                                                    CornerRadius="12"
+                                                    Background="{DynamicResource SurfaceBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="*,Auto"
+                                                      ColumnSpacing="10">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                                        <TextBlock Text="{Binding Description}"
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Padding="10,6"
+                                                            VerticalAlignment="Center"
+                                                            Command="{Binding DataContext.RemoveAssignedRoleCommand, ElementName=Root}"
+                                                            CommandParameter="{Binding}"
+                                                            Background="{DynamicResource SubtleSurfaceBrush}"
+                                                            BorderBrush="{DynamicResource BorderBrush}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="10">
+                                                        <TextBlock Text="Odbierz"
+                                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                                    </Button>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="12">
+                            <Border Classes="soft-card"
+                                    Padding="14"
+                                    CornerRadius="16">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Ostatnie logowanie"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Text="{Binding SelectedLastSignIn}"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    Classes="soft-card"
+                                    Padding="14"
+                                    CornerRadius="16">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Ostatni reset hasła"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Text="{Binding SelectedPasswordReset}"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Classes="soft-card"
+                                Padding="14"
+                                CornerRadius="16">
+                            <TextBlock Text="{Binding LastActionMessage}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

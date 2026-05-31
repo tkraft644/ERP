@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="src/ErpSystem.Desktop/App.axaml" value="src/ErpSystem.Desktop/ErpSystem.Desktop.csproj" />
+        <entry key="src/ErpSystem.Desktop/Views/Contractors/ContractorListWorkspaceView.axaml" value="src/ErpSystem.Desktop/ErpSystem.Desktop.csproj" />
+        <entry key="src/ErpSystem.Desktop/Views/Contractors/ContractorsWorkspaceStyles.axaml" value="src/ErpSystem.Desktop/ErpSystem.Desktop.csproj" />
+        <entry key="src/ErpSystem.Desktop/Views/ShellView.axaml" value="src/ErpSystem.Desktop/ErpSystem.Desktop.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

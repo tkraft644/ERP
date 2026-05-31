@@ -1,0 +1,16 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    container_name: erpsystem-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: "ErpSqlLocal2026!"
+    ports:
+      - "${ERP_SQL_HOST_PORT:-11433}:1433"
+    volumes:
+      - erpsystem-sqldata:/var/opt/mssql
+
+volumes:
+  erpsystem-sqldata:

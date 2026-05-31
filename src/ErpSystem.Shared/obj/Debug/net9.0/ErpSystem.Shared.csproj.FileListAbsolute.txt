@@ -1,0 +1,11 @@
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/bin/Debug/net9.0/ErpSystem.Shared.deps.json
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/bin/Debug/net9.0/ErpSystem.Shared.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/bin/Debug/net9.0/ErpSystem.Shared.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.GeneratedMSBuildEditorConfig.editorconfig
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.AssemblyInfoInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.AssemblyInfo.cs
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.csproj.CoreCompileInputs.cache
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/refint/ErpSystem.Shared.dll
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ErpSystem.Shared.pdb
+/Users/tomek/RiderProjects/ERP/src/ErpSystem.Shared/obj/Debug/net9.0/ref/ErpSystem.Shared.dll

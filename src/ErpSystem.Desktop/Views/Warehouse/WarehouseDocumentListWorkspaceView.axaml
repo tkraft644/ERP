@@ -1,0 +1,675 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels.Warehouse"
+             x:Class="ErpSystem.Desktop.Views.Warehouse.WarehouseDocumentListWorkspaceView"
+             x:Name="Root"
+             x:DataType="vm:WarehouseDocumentListWorkspaceViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem Border.document-row">
+            <Setter Property="Background" Value="{DynamicResource TableRowBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected Border.document-row">
+            <Setter Property="Background" Value="{DynamicResource SelectedItemBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SelectedItemBorderBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          RowSpacing="18">
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="18">
+            <StackPanel Spacing="5">
+                <TextBlock Text="Magazyn"
+                           FontSize="13"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource AccentBrush}" />
+                <TextBlock Text="{Binding Title}"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Text="{Binding Subtitle}"
+                           TextWrapping="Wrap"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    Padding="12,9"
+                    CornerRadius="14"
+                    Background="{DynamicResource AccentSurfaceBrush}"
+                    VerticalAlignment="Top">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Obieg dokumentow"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Kontroluj statusy, zatwierdzenia i eksporty bez opuszczania listy."
+                               MaxWidth="260"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <StackPanel Grid.Row="1"
+                    Spacing="16">
+            <Border Classes="panel"
+                    Padding="14"
+                    CornerRadius="18">
+                <StackPanel Spacing="12">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <WrapPanel Orientation="Horizontal"
+                                   >
+                            <TextBox Width="340"
+                                     Margin="0,0,10,10"
+                                     Text="{Binding SearchText}"
+                                     Watermark="Szukaj po numerze, kontrahencie lub operatorze..."
+                                     Padding="12,10"
+                                     Background="{DynamicResource SubtleSurfaceBrush}"
+                                     BorderBrush="{DynamicResource BorderBrush}" />
+                            <ComboBox Width="170"
+                                      Margin="0,0,10,10"
+                                      ItemsSource="{Binding TypeFilterOptions}"
+                                      SelectedItem="{Binding SelectedTypeFilter}" />
+                            <ComboBox Width="190"
+                                      Margin="0,0,10,10"
+                                      ItemsSource="{Binding StatusFilterOptions}"
+                                      SelectedItem="{Binding SelectedStatusFilter}" />
+                            <ComboBox Width="190"
+                                      Margin="0,0,10,10"
+                                      ItemsSource="{Binding WarehouseFilterOptions}"
+                                      SelectedItem="{Binding SelectedWarehouseFilter}" />
+                            <CheckBox Margin="0,0,18,10"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding OnlyPendingApproval}"
+                                      Content="Tylko do zatwierdzenia" />
+                            <CheckBox Margin="0,0,18,10"
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding ShowArchived}"
+                                      Content="Pokaz archiwum" />
+                        </WrapPanel>
+                    </ScrollViewer>
+
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunDocumentActionCommand}"
+                                CommandParameter="Nowy"
+                                Background="{DynamicResource AccentSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Nowy PZ"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunDocumentActionCommand}"
+                                CommandParameter="Edytuj"
+                                IsEnabled="{Binding HasSelectedDocument}"
+                                Background="{DynamicResource AccentSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Edytuj"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunDocumentActionCommand}"
+                                CommandParameter="Usun"
+                                IsEnabled="{Binding HasSelectedDocument}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Usun"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunDocumentActionCommand}"
+                                CommandParameter="Eksportuj"
+                                IsEnabled="{Binding HasSelectedDocument}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Eksportuj"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+                        <Button Margin="0,0,10,10"
+                                Padding="12,10"
+                                Command="{Binding RunDocumentActionCommand}"
+                                CommandParameter="Archiwizuj"
+                                IsEnabled="{Binding HasSelectedDocument}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="12">
+                            <TextBlock Text="Archiwizuj"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding SummaryCards}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="255" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:WarehouseSummaryCardViewModel">
+                        <Border Margin="0,0,14,14"
+                                Padding="16"
+                                MinHeight="126"
+                                CornerRadius="18"
+                                Classes="panel">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{Binding Label}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                <TextBlock Text="{Binding Value}"
+                                           FontSize="28"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding AccentColor}" />
+                                <TextBlock Text="{Binding Caption}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="1.55*,1.05*"
+              ColumnSpacing="18">
+            <Border Classes="panel"
+                    Padding="18"
+                    CornerRadius="22">
+                <Grid RowDefinitions="Auto,*"
+                      RowSpacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="Dokumenty magazynowe"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Text="Jedna lista dla PZ, WZ, MM, RW, PW i INW z szybka reakcja na status i obieg."
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding VisibleDocuments.Count, StringFormat='Dokumentow: {0}'}"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <Grid MinWidth="1220"
+                              RowDefinitions="Auto,*">
+                            <Border Padding="12,10"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource TableHeaderBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1">
+                                <Grid ColumnDefinitions="140,90,120,1.2*,130,120,100,110,110,130">
+                                    <TextBlock Text="Numer"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="Typ"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="2"
+                                               Text="Magazyn"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="3"
+                                               Text="Kontrahent"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="4"
+                                               Text="Status"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="5"
+                                               Text="Data"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="6"
+                                               Text="Pozycje"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="7"
+                                               Text="Ilosc"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="8"
+                                               Text="Wartosc"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Grid.Column="9"
+                                               Text="Operator"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                </Grid>
+                            </Border>
+
+                            <ListBox Grid.Row="1"
+                                     Margin="0,12,0,0"
+                                     ItemsSource="{Binding VisibleDocuments}"
+                                     SelectedItem="{Binding SelectedDocument}"
+                                     Background="Transparent"
+                                     BorderThickness="0">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WarehouseDocumentRowViewModel">
+                                        <Button Padding="0"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Command="{Binding DataContext.SelectDocumentCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}">
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="12,12"
+                                                    HorizontalAlignment="Stretch"
+                                                    CornerRadius="14"
+                                                    Classes="document-row"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="140,90,120,1.2*,130,120,100,110,110,130">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="{Binding Number}"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                                        <TextBlock Text="{Binding BadgeText}"
+                                                                   FontSize="11"
+                                                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Type}"
+                                                               VerticalAlignment="Center"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Warehouse}"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="3"
+                                                               Text="{Binding Counterparty}"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <Border Grid.Column="4"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Center"
+                                                            Padding="9,4"
+                                                            CornerRadius="999"
+                                                            Background="{Binding StatusColor}">
+                                                        <TextBlock Text="{Binding Status}"
+                                                                   FontSize="11"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="White" />
+                                                    </Border>
+                                                    <TextBlock Grid.Column="5"
+                                                               Text="{Binding DocumentDate}"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="6"
+                                                               Text="{Binding PositionCount}"
+                                                               VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="7"
+                                                               Text="{Binding QuantityLabel}"
+                                                               VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="8"
+                                                               Text="{Binding ValueLabel}"
+                                                               VerticalAlignment="Center"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="9"
+                                                               Text="{Binding Operator}"
+                                                               VerticalAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Padding="18"
+                    CornerRadius="22"
+                    Classes="panel">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="14">
+                        <TextBlock Text="Szczegoly dokumentu"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <TextBlock Text="{Binding SelectedDocumentNumber}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+
+                        <Grid ColumnDefinitions="*,Auto"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="8">
+                            <TextBlock Text="Typ"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding SelectedDocumentType}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Text="Magazyn"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedDocumentWarehouse}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="2"
+                                       Text="Kontrahent"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="2"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedDocumentCounterparty}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="3"
+                                       Text="Data"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedDocumentDate}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="4"
+                                       Text="Operator"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="4"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedDocumentOperator}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <TextBlock Grid.Row="5"
+                                       Text="Wartosc"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <TextBlock Grid.Row="5"
+                                       Grid.Column="1"
+                                       Text="{Binding SelectedDocumentValue}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*"
+                              ColumnSpacing="10">
+                            <Border Padding="12"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource SubtleSurfaceBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Status"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <Border HorizontalAlignment="Left"
+                                            Padding="8,4"
+                                            CornerRadius="999"
+                                            Background="{Binding SelectedDocumentStatusColor}">
+                                        <TextBlock Text="{Binding SelectedDocumentStatus}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White" />
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    Padding="12"
+                                    CornerRadius="14"
+                                    Background="{DynamicResource SubtleSurfaceBrush}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="Ilosc"
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                    <TextBlock Text="{Binding SelectedDocumentQuantity}"
+                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Padding="12"
+                                CornerRadius="14"
+                                Background="{DynamicResource AccentSurfaceBrush}">
+                            <TextBlock Text="{Binding SelectedDocumentNote}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource AccentBrush}" />
+                        </Border>
+
+                        <Border IsVisible="{Binding IsEditMode}"
+                                Padding="14"
+                                CornerRadius="16"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Edycja dokumentu"
+                                           FontSize="15"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                <TextBox Text="{Binding EditorDocumentDate}"
+                                         Watermark="Data dokumentu"
+                                         Background="{DynamicResource SurfaceBrush}" />
+                                <TextBox Text="{Binding EditorExternalReference}"
+                                         Watermark="Referencja zewnętrzna"
+                                         Background="{DynamicResource SurfaceBrush}" />
+                                <TextBox Text="{Binding EditorNotes}"
+                                         AcceptsReturn="True"
+                                         Height="92"
+                                         TextWrapping="Wrap"
+                                         Watermark="Notatka operacyjna"
+                                         Background="{DynamicResource SurfaceBrush}" />
+                                <WrapPanel Orientation="Horizontal">
+                                    <Button Margin="0,0,10,0"
+                                            Padding="10,9"
+                                            Command="{Binding SaveDocumentChangesCommand}"
+                                            Background="{DynamicResource AccentSurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                        <TextBlock Text="Zapisz zmiany"
+                                                   Foreground="{DynamicResource AccentBrush}" />
+                                    </Button>
+                                    <Button Padding="10,9"
+                                            Command="{Binding CancelDocumentEditCommand}"
+                                            Background="{DynamicResource SurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                        <TextBlock Text="Anuluj"
+                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                    </Button>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <WrapPanel Orientation="Horizontal">
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunDocumentActionCommand}"
+                                    CommandParameter="Edytuj"
+                                    IsEnabled="{Binding HasSelectedDocument}"
+                                    Background="{DynamicResource AccentSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Edytuj"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunDocumentActionCommand}"
+                                    CommandParameter="Usun"
+                                    IsEnabled="{Binding HasSelectedDocument}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Usun"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunDocumentActionCommand}"
+                                    CommandParameter="Eksportuj"
+                                    IsEnabled="{Binding HasSelectedDocument}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Eksportuj"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                            <Button Margin="0,0,10,10"
+                                    Padding="10,9"
+                                    Command="{Binding RunDocumentActionCommand}"
+                                    CommandParameter="Archiwizuj"
+                                    IsEnabled="{Binding HasSelectedDocument}"
+                                    Background="{DynamicResource SubtleSurfaceBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="12">
+                                <TextBlock Text="Archiwizuj"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                            </Button>
+                        </WrapPanel>
+
+                        <TextBlock Text="{Binding LastActionMessage}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+
+                        <Border Padding="16"
+                                CornerRadius="18"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Pozycje dokumentu"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                <ItemsControl ItemsSource="{Binding SelectedDocumentPositions}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:WarehouseDocumentPositionViewModel">
+                                            <Border Margin="0,0,0,8"
+                                                    Padding="10"
+                                                    CornerRadius="12"
+                                                    Background="{DynamicResource SurfaceBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1">
+                                                <Grid ColumnDefinitions="110,*,90,90,110"
+                                                      ColumnSpacing="10">
+                                                    <TextBlock Text="{Binding Code}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Name}"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Quantity}"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="3"
+                                                               Text="{Binding UnitPrice}"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="{DynamicResource ForegroundBrush}" />
+                                                    <TextBlock Grid.Column="4"
+                                                               Text="{Binding Location}"
+                                                               HorizontalAlignment="Right"
+                                                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Padding="16"
+                                CornerRadius="18"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Historia dokumentu"
+                                           FontSize="16"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                <ItemsControl ItemsSource="{Binding SelectedDocumentHistory}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:WarehouseDocumentHistoryViewModel">
+                                            <Grid Margin="0,0,0,8"
+                                                  ColumnDefinitions="70,*,130"
+                                                  ColumnSpacing="10">
+                                                <TextBlock Text="{Binding Time}"
+                                                           Foreground="{DynamicResource AccentBrush}" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Action}"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource ForegroundBrush}" />
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding Operator}"
+                                                           HorizontalAlignment="Right"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

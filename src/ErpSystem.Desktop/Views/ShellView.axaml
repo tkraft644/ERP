@@ -1,0 +1,530 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ErpSystem.Desktop.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Name="Root"
+             x:Class="ErpSystem.Desktop.Views.ShellView"
+             x:DataType="vm:ShellViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.shell-surface">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="Border.menu-item">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="Border.menu-item.selected">
+            <Setter Property="Background" Value="{DynamicResource SelectedItemBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SelectedItemBorderBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.menu-title">
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="TextBlock.menu-subtitle">
+            <Setter Property="Foreground" Value="{DynamicResource MutedForegroundBrush}" />
+        </Style>
+
+        <Style Selector="TextBlock.tab-title">
+            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style Selector="TextBlock.tab-subtitle">
+            <Setter Property="Foreground" Value="{DynamicResource MutedForegroundBrush}" />
+        </Style>
+
+        <Style Selector="Border.workspace-tab">
+            <Setter Property="Background" Value="{DynamicResource TabInactiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <Style Selector="Border.workspace-tab.selected">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid ColumnDefinitions="320,*"
+          RowDefinitions="Auto,Auto,*,Auto"
+          Background="{DynamicResource AppBackgroundBrush}">
+
+        <Border Grid.RowSpan="4"
+                Margin="18"
+                Padding="18"
+                CornerRadius="22"
+                Classes="shell-surface"
+                Background="{DynamicResource SidebarBackgroundBrush}">
+            <Grid RowDefinitions="Auto,Auto,Auto,*"
+                  RowSpacing="16">
+                <StackPanel Spacing="10">
+                    <Border Width="48"
+                            Height="48"
+                            CornerRadius="14"
+                            Background="{DynamicResource AccentBrush}">
+                        <TextBlock HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Text="ERP"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="White" />
+                    </Border>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{Binding ApplicationTitle}"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <TextBlock Text="{Binding ApplicationSubtitle}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                        Padding="14"
+                        CornerRadius="18"
+                        Classes="shell-surface">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{Binding SignedInUser}"
+                                   FontSize="17"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                        <TextBlock Text="{Binding RoleSummary}"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                        <TextBlock Margin="0,4,0,0"
+                                   Text="{Binding LeftMenuCaption}"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Row="2"
+                            Spacing="8">
+                    <TextBlock Text="Szukaj funkcji"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                    <TextBox Text="{Binding MenuSearchText}"
+                             Watermark="Szukaj funkcji..."
+                             Padding="12,10"
+                             Background="{DynamicResource SurfaceBrush}"
+                             BorderBrush="{DynamicResource BorderBrush}" />
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="3"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="10">
+                        <ItemsControl ItemsSource="{Binding MenuSections}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ShellMenuSectionViewModel">
+                                    <Border Classes="shell-surface"
+                                            HorizontalAlignment="Stretch"
+                                            Padding="2"
+                                            CornerRadius="16"
+                                            Background="{DynamicResource SurfaceBrush}">
+                                        <Expander IsExpanded="{Binding IsExpanded}"
+                                                  HorizontalAlignment="Stretch">
+                                            <Expander.Header>
+                                                <Border Padding="12,10"
+                                                        Background="Transparent">
+                                                    <Grid ColumnDefinitions="*,Auto">
+                                                        <TextBlock Text="{Binding Title}"
+                                                                   FontSize="15"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource ForegroundBrush}" />
+                                                        <Border Grid.Column="1"
+                                                                Padding="8,3"
+                                                                CornerRadius="999"
+                                                                Background="{DynamicResource AccentSurfaceBrush}">
+                                                            <TextBlock Text="{Binding ItemCountLabel}"
+                                                                       FontSize="11"
+                                                                       FontWeight="SemiBold"
+                                                                       Foreground="{DynamicResource AccentBrush}" />
+                                                        </Border>
+                                                    </Grid>
+                                                </Border>
+                                            </Expander.Header>
+
+                                            <ItemsControl Margin="8,0,8,8"
+                                                          ItemsSource="{Binding Items}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate x:DataType="vm:ShellMenuItemViewModel">
+                                                        <Button Margin="0,0,0,6"
+                                                                Padding="0"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                Background="Transparent"
+                                                                BorderThickness="0"
+                                                                Command="{Binding OpenCommand}"
+                                                                ToolTip.Tip="{Binding Subtitle}">
+                                                            <Border Padding="12,11"
+                                                                    CornerRadius="12"
+                                                                    Classes="menu-item"
+                                                                    Classes.selected="{Binding IsSelected}">
+                                                                <TextBlock Text="{Binding Title}"
+                                                                           TextWrapping="Wrap"
+                                                                           Classes="menu-title"
+                                                                           Classes.selected="{Binding IsSelected}" />
+                                                            </Border>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </Expander>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Padding="14"
+                                CornerRadius="16"
+                                Classes="shell-surface"
+                                IsVisible="{Binding ShowEmptyMenuMessage}">
+                            <TextBlock Text="{Binding EmptyMenuMessage}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1"
+                Margin="0,18,18,0"
+                Padding="18"
+                CornerRadius="22"
+                Classes="shell-surface">
+            <Grid ColumnDefinitions="*,Auto,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding CurrentModuleTitle}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="{Binding CurrentWorkspaceTitle}"
+                               FontSize="26"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+                    <TextBlock Text="{Binding WorkspaceHint}"
+                               TextWrapping="Wrap"
+                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Spacing="8"
+                            HorizontalAlignment="Right">
+                    <TextBlock Text="Motyw"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                    <ComboBox Width="110"
+                              ItemsSource="{Binding ThemeModes}"
+                              SelectedItem="{Binding SelectedThemeMode}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2"
+                            Spacing="8"
+                            HorizontalAlignment="Right">
+                    <Border Padding="12,8"
+                            CornerRadius="12"
+                            Background="{DynamicResource AccentSurfaceBrush}">
+                        <TextBlock Text="{Binding ApiStatusLabel}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource AccentBrush}" />
+                    </Border>
+
+                    <Button Padding="12,9"
+                            Command="{Binding RefreshApiStatusCommand}"
+                            Background="{DynamicResource SubtleSurfaceBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="Odśwież dane"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                    </Button>
+
+                    <Button Padding="12,9"
+                            Command="{Binding SignOutCommand}"
+                            Background="{DynamicResource SurfaceBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1">
+                        <TextBlock Text="Wyloguj"
+                                   Foreground="{DynamicResource ForegroundBrush}" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,14,18,0"
+                Padding="12"
+                CornerRadius="20"
+                Classes="shell-surface">
+            <Grid RowDefinitions="Auto,Auto,Auto"
+                  RowSpacing="12">
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+                    <TextBlock Text="Otwarte zakładki"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource ForegroundBrush}" />
+
+                    <WrapPanel Grid.Column="1"
+                               Orientation="Horizontal"
+                               HorizontalAlignment="Right">
+                        <Button Margin="0,0,8,8"
+                                Padding="10,8"
+                                Command="{Binding TogglePinWorkspaceCommand}"
+                                CommandParameter="{Binding SelectedWorkspace}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <TextBlock Text="{Binding PinSelectedWorkspaceLabel}"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+
+                        <Button Margin="0,0,8,8"
+                                Padding="10,8"
+                                Command="{Binding CloseOtherWorkspacesCommand}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <TextBlock Text="Zamknij inne"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+
+                        <Button Margin="0,0,8,8"
+                                Padding="10,8"
+                                Command="{Binding CloseAllWorkspacesCommand}"
+                                Background="{DynamicResource SubtleSurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1">
+                            <TextBlock Text="Zamknij wszystkie"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                        </Button>
+
+                        <StackPanel Width="180"
+                                    Margin="0,0,0,8"
+                                    Spacing="4"
+                                    IsVisible="{Binding HasRecentWorkspaces}">
+                            <TextBlock Text="Ostatnio uzywane"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                            <ComboBox ItemsSource="{Binding RecentWorkspaces}"
+                                      SelectedItem="{Binding SelectedRecentWorkspace}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WorkspaceViewModelBase">
+                                        <StackPanel Spacing="2">
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="{DynamicResource ForegroundBrush}" />
+                                            <TextBlock Text="{Binding ModuleTitle}"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </WrapPanel>
+                </Grid>
+
+                <Grid Grid.Row="1"
+                      ColumnDefinitions="*,200"
+                      ColumnSpacing="10">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding VisibleWorkspaces}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="10" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:WorkspaceViewModelBase">
+                                    <Border Width="192"
+                                            Padding="12,10"
+                                            CornerRadius="14"
+                                            Classes="workspace-tab"
+                                            Classes.selected="{Binding IsSelected}">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              RowDefinitions="Auto,Auto">
+                                            <Button Padding="0"
+                                                    Command="{Binding DataContext.SelectWorkspaceCommand, ElementName=Root}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="Transparent"
+                                                    BorderThickness="0">
+                                                <StackPanel HorizontalAlignment="Left"
+                                                            Spacing="3">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Spacing="6">
+                                                        <TextBlock Text="{Binding PinGlyph}"
+                                                                   Foreground="{DynamicResource AccentBrush}" />
+                                                        <TextBlock Text="{Binding Title}"
+                                                                   Classes="tab-title"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding ModuleTitle}"
+                                                               Classes="tab-subtitle" />
+                                                </StackPanel>
+                                            </Button>
+
+                                            <Button Grid.Column="1"
+                                                    Width="26"
+                                                    Height="26"
+                                                    IsEnabled="{Binding CanClose}"
+                                                    Command="{Binding DataContext.CloseWorkspaceCommand, ElementName=Root}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="Transparent"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="9">
+                                                <TextBlock HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Text="×"
+                                                           FontSize="14"
+                                                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                                            </Button>
+
+                                            <TextBlock Grid.Row="1"
+                                                       Grid.ColumnSpan="2"
+                                                       Margin="0,6,0,0"
+                                                       Text="{Binding Subtitle}"
+                                                       FontSize="11"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Border Grid.Column="1"
+                            Padding="10"
+                            CornerRadius="14"
+                            Classes="shell-surface"
+                            IsVisible="{Binding HasOverflowWorkspaces}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="{Binding OverflowWorkspaceLabel}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ForegroundBrush}" />
+                            <ComboBox ItemsSource="{Binding OverflowWorkspaces}"
+                                      SelectedItem="{Binding SelectedOverflowWorkspace}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WorkspaceViewModelBase">
+                                        <StackPanel Spacing="2">
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="{DynamicResource ForegroundBrush}" />
+                                            <TextBlock Text="{Binding ModuleTitle}"
+                                                       FontSize="11"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{Binding QuickActionCaption}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource MutedForegroundBrush}" />
+                        <ItemsControl ItemsSource="{Binding QuickActions}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"
+                                               ItemWidth="168" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:QuickActionViewModel">
+                                    <Button Margin="0,0,10,10"
+                                            Padding="12,10"
+                                            Command="{Binding DataContext.ExecuteQuickActionCommand, ElementName=Root}"
+                                            CommandParameter="{Binding}"
+                                            Background="{DynamicResource SubtleSurfaceBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                        <StackPanel Spacing="3">
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource ForegroundBrush}" />
+                                            <TextBlock Text="{Binding Caption}"
+                                                       FontSize="11"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="{DynamicResource MutedForegroundBrush}" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1"
+                               VerticalAlignment="Top"
+                               Text="{Binding WorkspaceCountLabel}"
+                               Foreground="{DynamicResource MutedForegroundBrush}" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Grid.Column="1"
+                Margin="0,14,18,0"
+                Padding="18"
+                CornerRadius="22"
+                Classes="shell-surface">
+            <ContentControl Content="{Binding ActiveWorkspace}" />
+        </Border>
+
+        <Border Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="18,14,18,18"
+                Padding="14,12"
+                CornerRadius="18"
+                Classes="shell-surface">
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto"
+                  ColumnSpacing="18">
+                <TextBlock Text="{Binding SignedInUser}"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource ForegroundBrush}" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding RoleSummary}"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                <TextBlock Grid.Column="2"
+                           Text="{Binding StatusMessage}"
+                           TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                <TextBlock Grid.Column="3"
+                           Text="{Binding ApiEndpointLabel}"
+                           Foreground="{DynamicResource MutedForegroundBrush}" />
+                <TextBlock Grid.Column="4"
+                           Text="{Binding LocalTimeLabel}"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource AccentBrush}" />
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
